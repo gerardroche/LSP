@@ -480,8 +480,18 @@ class DocumentSyncListener(sublime_plugin.ViewEventListener, AbstractViewListene
         return None
 
     def on_hover(self, point: int, hover_zone: int) -> None:
+        if self.view.settings().get('lsp.disable_on_hover'):
+            return
+
+        if hover_zone == sublime.HOVER_TEXT and self.view.settings().get('lsp.disable_on_hover_text'):
+            return
+
+        if hover_zone == sublime.HOVER_GUTTER and self.view.settings().get('lsp.disable_on_hover_gutter'):
+            return
+
         if self.view.is_popup_visible():
             return
+
         window = self.view.window()
         if hover_zone == sublime.HOVER_TEXT and window and window.settings().get(HOVER_ENABLED_KEY, True):
             self.view.run_command("lsp_hover", {"point": point})
