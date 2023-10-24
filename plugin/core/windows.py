@@ -458,6 +458,11 @@ class WindowManager(Manager, WindowConfigChangeListener):
     def handle_show_message(self, session: Session, params: Any) -> None:
         if isinstance(params, dict) and 'message' in params and not params['message']:
             return
+        if isinstance(params, dict) and 'message' in params:
+            if not params['message']:
+                return
+            if "Done index" in params['message']:
+                return
         sublime.status_message(f"{session.config.name}: {extract_message(params)}")
 
     def on_diagnostics_updated(self) -> None:
