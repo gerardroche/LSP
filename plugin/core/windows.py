@@ -497,6 +497,13 @@ class WindowManager(Manager, WindowConfigChangeListener, ViewStatusHandler):
         return bool(panel and panel.settings().get(LOG_LINES_LIMIT_SETTING_NAME, True))
 
     def handle_show_message(self, config_name: str, params: ShowMessageParams) -> None:
+        if isinstance(params, dict) and 'message' in params and not params['message']:
+            return
+        if isinstance(params, dict) and 'message' in params:
+            if not params['message']:
+                return
+            if "Done index" in params['message']:
+                return
         level = MESSAGE_TYPE_LEVELS[params['type']]
         message = params['message']
         msg = f"{config_name}: {level}: {message}"
