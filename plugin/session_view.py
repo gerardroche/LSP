@@ -40,6 +40,16 @@ class TagData:
         self.scope = scope
 
 
+def _ignore_files_containing(view: sublime.View) -> bool:
+    if view and view.file_name():
+        ignore_files_containing = view.settings().get('lsp.ignore_files_containing')
+        if ignore_files_containing and isinstance(ignore_files_containing, list):
+            for exclusion in ignore_files_containing:
+                if exclusion in view.file_name():
+                    return True
+    return False
+
+
 class SessionView:
     """
     Holds state per session per view.
@@ -134,6 +144,9 @@ class SessionView:
           - gutter icons from region keys which were initialized _first_ are drawn
         For more context, see https://github.com/sublimelsp/LSP/issues/1593.
         """
+        if _ignore_files_containing(self.view):
+            return
+
         keys: list[str] = []
         r = [sublime.Region(0, 0)]
         document_highlight_style = userprefs().document_highlight_style
@@ -322,6 +335,9 @@ class SessionView:
         flags: int,
         multiline: bool
     ) -> None:
+        if _ignore_files_containing(self.view):
+            return
+
         ICON_FLAGS = sublime.HIDE_ON_MINIMAP | sublime.DRAW_NO_FILL | sublime.DRAW_NO_OUTLINE | sublime.NO_UNDO
         key = self.diagnostics_key(severity, multiline)
         tags = {tag: TagData(f'{key}_tags_{tag}') for tag in DIAGNOSTIC_TAG_VALUES}
