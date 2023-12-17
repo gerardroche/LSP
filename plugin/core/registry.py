@@ -21,6 +21,11 @@ import sublime_plugin
 windows = WindowRegistry()
 
 
+def new_tree_view_sheet(*args, **kwargs):
+    from .tree_view import new_tree_view_sheet as new_tree_view_sheet_bc
+    new_tree_view_sheet_bc(*args, **kwargs)
+
+
 def best_session(view: sublime.View, sessions: Iterable[Session], point: int | None = None) -> Session | None:
     if point is None:
         try:
