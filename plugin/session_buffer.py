@@ -388,11 +388,12 @@ class SessionBuffer:
             self._check_did_close(view)
             self._last_known_uri = new_uri
             self._check_did_open(view)
-        else:
-            send_did_save, include_text = self.should_notify_did_save()
-            if send_did_save:
-                self.purge_changes_async(view)
-                self.session.send_notification(did_save(view, include_text, self._last_known_uri))
+        # FIX diagnostics not showing when saving
+        # else:
+        #     send_did_save, include_text = self.should_notify_did_save()
+        #     if send_did_save:
+        #         self.purge_changes_async(view)
+        #         self.session.send_notification(did_save(view, include_text, self._last_known_uri))
         if self._has_changed_during_save:
             self._has_changed_during_save = False
             self._on_after_change_async(view, view.change_count())
